@@ -1,0 +1,79 @@
+import csv
+import random
+import matplotlib.pyplot as plt
+import numpy as np
+
+#读入csv文件
+csv_file = csv.reader(open('CEPS.csv','r'))
+
+#挑选的两个连续性变量：sweight, cog3pl
+sw = []
+co = []
+
+for line in csv_file:
+    sw.append(line[6])
+    co.append(line[10])
+sw.pop(0)
+co.pop(0)
+
+var1 = []
+var2 = []
+for i in range(1,30): #以下操作重复30次
+
+    #随机抽取1000组数据
+    sw_1000 = random.sample(sw, 1000)
+    co_1000 = random.sample(co, 1000)
+
+    #计算均值
+    sum = 0.0
+    for str in sw_1000:
+        num = float(str)
+        sum += num
+    sw_mean = sum / 1000
+    var1.append(sw_mean)
+    
+    sum = 0.0
+    for str in co_1000:
+        num = float(str)
+        sum += num
+    co_mean = sum / 1000
+    var2.append(co_mean)
+    
+print(var1)
+
+#绘制直方图
+
+plt.subplot(1,2,1)
+plt.hist(var1, bins = 30, label = ['var1'])
+plt.grid(True)
+plt.xlabel('value')
+plt.ylabel('frequency')
+plt.title('var1')
+
+plt.subplot(1,2,2)
+plt.hist(var2, bins = 30, label = ['var2'])
+plt.grid(True)
+plt.xlabel('value')
+plt.ylabel('frequency')
+plt.title('var2')
+plt.show()
+
+
+#计算均值和方差
+sum = 0.0
+for value in var1:
+    sum += value
+var1_mean = sum / 30
+var1_var = np.var(var1)
+
+sum = 0.0
+for value in var2:
+    sum += value
+var2_mean = sum / 30
+var2_var = np.var(var2)
+
+print("第一个变量的均值是：", var1_mean)
+print("第一个变量的方差是：", var1_var)
+
+print("第二个变量的均值是：", var2_mean)
+print("第二个变量的方差是：", var2_var)
